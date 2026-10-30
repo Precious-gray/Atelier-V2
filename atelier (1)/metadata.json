@@ -1,0 +1,6 @@
+{
+  "name": "Atelier",
+  "description": "Couture fashion studio with Leonardo.ai luxury dark aesthetic, hybrid public/private Firebase cloud catalog, client fitting dossiers, and prompt concept generator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

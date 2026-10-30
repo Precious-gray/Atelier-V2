@@ -1,0 +1,35 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // =========================================================================
+    // 1. GLOBAL BASELINE CATALOG (Public Collection)
+    // =========================================================================
+    // The baseline garments live in /garments.
+    // Publicly readable by any client, but write-protected from client modification.
+    match /garments/{garmentId} {
+      allow read: if true;
+      allow write: if false; // Locked from client-side tampering
+    }
+
+    // =========================================================================
+    // 2. PRIVATE CLIENT & CUSTOM GARMENT DATA (Private Per-User Scope)
+    // =========================================================================
+    // Every authenticated device (including Firebase Anonymous Auth) has a unique uid.
+    // Users can ONLY read and write their own sub-collections.
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      // Private Custom Garments: /users/{uid}/custom_garments/{garmentId}
+      match /custom_garments/{garmentId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      // Private Client Dossiers & Fitting Notes: /users/{uid}/clients/{clientId}
+      match /clients/{clientId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+  }
+}
